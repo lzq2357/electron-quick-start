@@ -1,30 +1,41 @@
 // Modules to control application life and create native browser window
+
+
+/**
+ * 主进程 : main.js
+ * 渲染进程：index.html，加载一个页面就是一个渲染进程
+ *  electron 5.x 之前可以直接使用 nodejs，ele5.x 之后需要配置下
+ * */
 const {app, BrowserWindow} = require('electron')
 const path = require('path')
 
 function createWindow () {
-  // Create the browser window.
+
+
+  // 创建window窗口，相当于浏览器主窗口
   const mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
+      //electron 5.x 之前可以直接使用 nodejs，ele5.x 之后需要配置下
+      nodeIntegration: true,
+      //预加载 一些js 包
       preload: path.join(__dirname, 'preload.js')
     }
   })
 
-  // and load the index.html of the app.
+  // 加载index.html，一个页面是一个渲染进程
   mainWindow.loadFile('index.html')
 
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+  mainWindow.webContents.openDevTools()
 }
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
+//  Electron 加载完成后 回调这个方法
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
   createWindow()
-  
+
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
